@@ -6,13 +6,14 @@
 #11.22当前问题：碰撞中的时间并不能完全和手柄运动轨迹中的时间吻合，需要一点模糊的解决方式。
 #找到在碰撞文件中的时间，在手柄轨迹中的时间中寻找差值最小的一个，根据它当前坐标和前一帧的坐标运动方向来判断是朝着什么方向运动的。
 
+#每次同时打开控制器的轨迹文件和碰撞点文件，只进行RTV文件部分的计算。
 import os
 import math
 import inspect
 import re
 
 allFileNum=0
-
+Controller_time=[]
 
 def printPath(PID,Dimension,experiment_num,experiment_type,level,path,outputpath):
     global allFileNum
@@ -49,6 +50,17 @@ def printPath(PID,Dimension,experiment_num,experiment_type,level,path,outputpath
         print ('-' * (int(dirList[0])), path+'/'+fl)
         #print(path+'/'+fl)
         allFileNum = allFileNum + 1
+
+#读取控制器文件部分
+def readfile(filepath):
+    f=open(filepath)
+    line=f.readline()
+    while line:
+        linelist=line.split(',')
+        Controller_time.append(linelist[3].strip('\n'))
+        line=f.readline()
+    f.close()
+
 
 def read_file(PID,Dimension,experiment_num,filepath,outputpath):
     #如果當前檢測的是豎直方向，則參數為90
@@ -122,5 +134,5 @@ def Judge_Direction(Orientation,Controller_location1,Controller_location2):
 if __name__ == "__main__":
     namelist=['wangchen','kavous','hanzengyi','yuga','liujingxin','fitra','wuanran','jiangxinhui','liyang','zhanghongtao','lizhen','linzhengwei']
     for i in range(12):
-        printPath(str(i),'1','Experiment1','0',1,'/Users/jasonhanyi/Downloads/ocb-data/'+namelist[i],'/Users/jasonhanyi/Downloads/11.20-Alldata.txt')
-        printPath(str(i),'2','Experiment2','0',1,'/Users/jasonhanyi/Downloads/ocb-data/'+namelist[i],'/Users/jasonhanyi/Downloads/11.20-Alldata.txt')
+        printPath(str(i),'1','Experiment1','0',1,'/Users/jasonhanyi/Downloads/ocb-data/'+namelist[i],'/Users/jasonhanyi/Downloads/11.22-TABdata.txt')
+        printPath(str(i),'2','Experiment2','0',1,'/Users/jasonhanyi/Downloads/ocb-data/'+namelist[i],'/Users/jasonhanyi/Downloads/11.22-TABdata.txt')
